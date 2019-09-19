@@ -73,6 +73,10 @@ class TableList extends Component<TableListProps, TableListState> {
         ...this.getColumeSearchProps('desc'),
       },
       {
+        title: '行业',
+        dataIndex: 'channel',
+      },
+      {
         title: '创建时间',
         dataIndex: 'createdAt',
         sorter: true,

@@ -20,10 +20,14 @@ interface IDTableState {
 // --------每个服务不同的配置-------------------------
 
 export interface Customer {
-  id: string;
+  id?: string;
   name: string;
-  desc: string;
-  createdAt: Date;
+  desc?: string;
+  up?: string;
+  url?: string;
+  addr?: string;
+  channel: string;
+  createdAt?: Date;
 }
 
 export interface TablePagination {
@@ -43,4 +47,40 @@ export interface TableListParams {
   name: string;
   pageSize: number;
   currentPage: number;
+}
+
+export interface CustomerParams {
+  id: string;
+  name?: string;
+  channel?: string;
+}
+
+export interface Contact {
+  id?: string;
+  name: string;
+  cid: string;
+  email?: string;
+  phone?: string;
+  title?: string;
+  depart?: string;
+  createdAt?: Date;
+  status?: boolean;
+}
+
+export interface AppKey {
+  id?: string;
+  cid: string;
+  name: string;
+  secKey: string;
+  to: Date;
+  createdAt?: Date;
+  status?: boolean;
+}
+
+export interface CustomerFormStateType {
+  data: {
+    customer?: Customer;
+    contacts?: Contact[];
+    appKeys?: AppKey[];
+  };
 }

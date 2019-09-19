@@ -27,3 +27,22 @@ export function setAuthority(authority: string | string[]): void {
   const proAuthority = typeof authority === 'string' ? [authority] : authority;
   return localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
 }
+
+/**
+ *
+ * @param token string 认证过的token数据
+ */
+export function saveToken(token: string): void {
+  return localStorage.setItem('x-auth-token', JSON.stringify(token));
+}
+
+export function getToken(): string {
+  if (!localStorage.getItem('x-auth-token')) {
+    return '';
+  }
+  return JSON.parse(localStorage.getItem('x-auth-token')!);
+}
+
+export function cleanToken(): void {
+  localStorage.removeItem('x-auth-token');
+}

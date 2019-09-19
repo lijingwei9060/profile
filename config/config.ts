@@ -125,6 +125,16 @@ export default {
               component: './customers',
             },
             {
+              name: 'customerforms',
+              path: '/customers/add',
+              component: './customers/CreateForm',
+            },
+            {
+              name: 'customerformsModify',
+              path: '/customers/:id',
+              component: './customers/CreateForm',
+            },
+            {
               component: './404',
             },
           ],

@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { TableListParams } from './data';
+import { TableListParams, CustomerParams } from './data';
 
 export async function queryCustomer(params: TableListParams) {
   return request('/api/customer', {
@@ -35,4 +35,8 @@ export async function updateCustomer(params: TableListParams) {
       method: 'update',
     },
   });
+}
+
+export async function fetchById(params: CustomerParams) {
+  return request('/api/customer', { params });
 }

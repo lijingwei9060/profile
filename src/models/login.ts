@@ -3,13 +3,12 @@ import { routerRedux } from 'dva/router';
 import { Effect } from 'dva';
 import { stringify } from 'querystring';
 
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
+import { accountLogin, getFakeCaptcha } from '@/services/login';
+import { setAuthority, saveToken, cleanToken } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 
 export interface StateType {
   status?: 'ok' | 'error';
-  type?: string;
   currentAuthority?: 'user' | 'guest' | 'admin';
 }
 
@@ -23,6 +22,7 @@ export interface LoginModelType {
   };
   reducers: {
     changeLoginStatus: Reducer<StateType>;
+    logoutStatus: Reducer<StateType>;
   };
 }
 
@@ -35,13 +35,13 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
+      const response = yield call(accountLogin, payload);
       // Login successfully
-      if (response.status === 'ok') {
+      if (response && response.status === 'ok') {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -65,6 +65,10 @@ const Model: LoginModelType = {
       yield call(getFakeCaptcha, payload);
     },
     *logout(_, { put }) {
+      yield put({
+        type: 'logoutStatus',
+        payload: {},
+      });
       const { redirect } = getPageQuery();
       // redirect
       if (window.location.pathname !== '/user/login' && !redirect) {
@@ -82,12 +86,16 @@ const Model: LoginModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      setAuthority('admin');
+      saveToken(payload.data.token);
       return {
         ...state,
-        status: payload.status,
-        type: payload.type,
+        status: 'ok',
       };
+    },
+    logoutStatus(status, { payload }) {
+      cleanToken();
+      return { status: undefined };
     },
   },
 };

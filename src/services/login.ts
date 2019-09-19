@@ -1,14 +1,12 @@
-import request from 'umi-request';
+import request from '@/utils/request';
 
 export interface LoginParamsType {
-  userName: string;
   password: string;
   mobile: string;
-  captcha: string;
 }
 
-export async function fakeAccountLogin(params: LoginParamsType) {
-  return request('/api/login/account', {
+export async function accountLogin(params: LoginParamsType) {
+  return request('http://127.0.0.1:7001/api/user/access/login', {
     method: 'POST',
     data: params,
   });

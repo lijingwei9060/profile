@@ -2,8 +2,9 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
-import { extend } from 'umi-request';
+import { extend, RequestOptionsInit } from 'umi-request';
 import { notification } from 'antd';
+import { getToken } from '@/utils/authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -51,6 +52,27 @@ const errorHandler = (error: { response: Response }): Response => {
 const request = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
+});
+
+/**
+ * request拦截器, 改变url 或 options.
+ *
+ */
+
+request.interceptors.request.use((url: string, options: RequestOptionsInit): {
+  url?: string;
+  options?: RequestOptionsInit;
+} => {
+  let authoredToken = getToken();
+
+  if (authoredToken) {
+    options.headers = {
+      Authorization: `Bearer ${authoredToken}`,
+      ...options.headers,
+    };
+  }
+
+  return { url: url, options: { ...options } };
 });
 
 export default request;
