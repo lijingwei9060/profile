@@ -7,6 +7,7 @@ import { formatMessage } from 'umi-plugin-react/locale';
 
 import SelectLang from '@/components/SelectLang';
 import { ConnectProps, ConnectState } from '@/models/connect';
+import defaultSettings from '../../config/defaultSettings';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
 
@@ -54,7 +55,7 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
           </div>
           {children}
         </div>
-        <DefaultFooter links={[]} copyright="casoul" />
+        <DefaultFooter links={[]} copyright={defaultSettings.copyright} />
       </div>
     </DocumentTitle>
   );

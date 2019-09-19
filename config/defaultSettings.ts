@@ -40,6 +40,8 @@ export interface DefaultSettings {
   // Usage: https://github.com/ant-design/ant-design-pro/pull/3517
   iconfontUrl: string;
   colorWeak: boolean;
+  copyright: string;
+  serverUrl: string;
 }
 
 export default {
@@ -57,4 +59,6 @@ export default {
   title: 'Ant Design Pro',
   pwa: false,
   iconfontUrl: '',
+  copyright: 'casoul',
+  serverUrl: 'http://127.0.0.1:7001',
 } as DefaultSettings;

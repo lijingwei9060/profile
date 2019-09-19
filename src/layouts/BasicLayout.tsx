@@ -20,6 +20,7 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro } from '@/utils/utils';
+import defaultSettings from '../../config/defaultSettings';
 import logo from '../assets/logo.svg';
 
 export interface BasicLayoutProps extends ProLayoutProps {
@@ -49,7 +50,7 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
 
 const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
   if (!isAntDesignPro()) {
-    return <DefaultFooter links={[]} copyright="casoul"></DefaultFooter>;
+    return <DefaultFooter links={[]} copyright={defaultSettings.copyright}></DefaultFooter>;
   }
   return (
     <>

@@ -1,11 +1,11 @@
 import request from '@/utils/request';
-
+import defaultSettings from '../../config/defaultSettings';
 export async function query(): Promise<any> {
-  return request('http://127.0.0.1:7001/api/user');
+  return request(`${defaultSettings.serverUrl}/api/user`);
 }
 
 export async function queryCurrent(): Promise<any> {
-  return request('http://127.0.0.1:7001/api/user/access/current');
+  return request(`${defaultSettings.serverUrl}/api/user/access/current`);
 }
 
 export async function queryNotices(): Promise<any> {

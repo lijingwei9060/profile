@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import defaultSettings from '../../config/defaultSettings';
 
 export interface LoginParamsType {
   password: string;
@@ -6,7 +7,7 @@ export interface LoginParamsType {
 }
 
 export async function accountLogin(params: LoginParamsType) {
-  return request('http://127.0.0.1:7001/api/user/access/login', {
+  return request(`${defaultSettings.serverUrl}/api/user/access/login`, {
     method: 'POST',
     data: params,
   });
