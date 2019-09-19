@@ -1,4 +1,3 @@
-import { Icon, Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
@@ -48,20 +47,6 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
           console.log('enter', value);
         }}
       />
-      <Tooltip
-        title={formatMessage({
-          id: 'component.globalHeader.help',
-        })}
-      >
-        <a
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
-          rel="noopener noreferrer"
-          className={styles.action}
-        >
-          <Icon type="question-circle-o" />
-        </a>
-      </Tooltip>
       <Avatar />
       <SelectLang className={styles.action} />
     </div>
