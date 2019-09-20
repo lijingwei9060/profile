@@ -49,4 +49,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
   'menu.customers': '客户',
   'menu.tables': 'tables',
+  'menu.usermanager': '用户管理',
+  'menu.customerforms': 'customerforms',
+  'menu.customerformsModify': 'customerformsModify',
 };

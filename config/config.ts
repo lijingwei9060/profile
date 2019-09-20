@@ -120,6 +120,12 @@ export default {
               component: './tables',
             },
             {
+              name: 'usermanager',
+              path: '/um',
+              icon: 'user',
+              component: './user/list',
+            },
+            {
               name: 'customers',
               path: '/customers',
               component: './customers',
