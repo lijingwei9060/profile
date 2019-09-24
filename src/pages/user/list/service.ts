@@ -8,13 +8,9 @@ export async function queryUser(params: IUserParam) {
   });
 }
 
-export async function removeUser(params: IUserParam) {
-  return request(`${defaultSettings.serverUrl}/api/user`, {
-    method: 'POST',
-    data: {
-      ...params,
-      method: 'delete',
-    },
+export async function removeUser(params: IUser) {
+  return request(`${defaultSettings.serverUrl}/api/user/${params.id}`, {
+    method: 'DELETE',
   });
 }
 

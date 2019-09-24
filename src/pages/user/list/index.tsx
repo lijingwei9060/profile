@@ -9,9 +9,10 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { SorterResult } from 'antd/es/table';
 import { connect } from 'dva';
 import moment from 'moment';
-import { IUserStateType } from './model';
 
-import { IUser, IUserParam } from './model';
+import UserForm from './CreateForm';
+import { IUser, IUserStateType, IUserParam } from './model';
+import { queryRoles } from '../../../services/common';
 
 import styles from './style.less';
 
@@ -27,8 +28,9 @@ interface TableListProps {
 }
 
 interface TableListState {
-  selectedRows: IUser[];
+  user?: IUser;
   searchText: string;
+  modalVisible: boolean;
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -52,15 +54,17 @@ class TableList extends Component<TableListProps, TableListState> {
   private searchInput: any;
   private columns: ColumnProps<IUser>[];
   private filterSet: Map<string, FilterDropdownProps>;
+  private roles: { name: string; id: string }[];
 
   constructor(props: TableListProps) {
     super(props);
     this.searchInput = React.createRef();
     this.filterSet = new Map();
     this.state = {
-      selectedRows: [],
       searchText: '',
+      modalVisible: false,
     };
+    this.roles = [];
 
     this.columns = [
       {
@@ -104,9 +108,9 @@ class TableList extends Component<TableListProps, TableListState> {
               <a onClick={() => this.showDisableConfirm(record)}>启用</a>
             )}
             <Divider type="vertical" />
-            <a href="">改密码</a>
+            <a onClick={() => this.handleUpdate(record)}>修改</a>
             <Divider type="vertical" />
-            <a href="">待办</a>
+            <a onClick={() => this.showDeleteConfirm(record)}>删除</a>
           </Fragment>
         ),
       },
@@ -117,6 +121,12 @@ class TableList extends Component<TableListProps, TableListState> {
     const { dispatch } = this.props;
     dispatch({
       type: 'um/fetch',
+    });
+    //获取roles
+    queryRoles().then(res => {
+      if (res && res.status === 'ok') {
+        this.roles = res.data.list;
+      }
     });
   }
 
@@ -204,6 +214,24 @@ class TableList extends Component<TableListProps, TableListState> {
     });
   };
 
+  //显示删除确认框
+  showDeleteConfirm(record: IUser) {
+    //禁用
+    Modal.confirm({
+      title: `你想删除${record.realName}吗？`,
+      content: `你想删除${record.realName}吗？`,
+      onOk: () => this.deleteUser(record),
+    });
+  }
+
+  deleteUser = (user: IUser) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'um/remove',
+      payload: { ...user },
+    });
+  };
+
   handleSearch = (
     selectedKeys: FilterDropdownProps['selectedKeys'],
     confirm: FilterDropdownProps['confirm'],
@@ -248,12 +276,6 @@ class TableList extends Component<TableListProps, TableListState> {
     });
   };
 
-  handleSelectRows = (rows: IUser[]) => {
-    this.setState({
-      selectedRows: rows,
-    });
-  };
-
   resetFilterSets = () => {
     this.filterSet.forEach(
       (fd: FilterDropdownProps, di: string, map: Map<string, FilterDropdownProps>) => {
@@ -264,18 +286,44 @@ class TableList extends Component<TableListProps, TableListState> {
     this.setState({ searchText: '' });
   };
 
+  //处理新增
+  handleModalVisible = (flag?: boolean) => {
+    this.setState({ user: undefined, modalVisible: !!flag });
+  };
+  handleAdd = (fieldsValue: { [key: string]: string }) => {
+    const { dispatch } = this.props;
+    if (fieldsValue['id']) {
+      dispatch({
+        type: 'um/update',
+        payload: fieldsValue,
+      });
+    } else {
+      dispatch({
+        type: 'um/add',
+        payload: fieldsValue,
+      });
+    }
+
+    this.handleModalVisible();
+  };
+
+  //处理修改
+  handleUpdate = (user: IUser) => {
+    this.setState({ user: user, modalVisible: true });
+  };
   render() {
     const {
       users: { data },
       loading,
     } = this.props;
+    const { user, modalVisible } = this.state;
 
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary">
+              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
               </Button>
               <Button icon="sync" onClick={() => this.resetFilterSets()}>
@@ -293,6 +341,13 @@ class TableList extends Component<TableListProps, TableListState> {
             />
           </div>
         </Card>
+        <UserForm
+          user={user}
+          roles={this.roles}
+          handleAdd={this.handleAdd}
+          handleModalVisible={this.handleModalVisible}
+          modalVisible={modalVisible}
+        ></UserForm>
       </PageHeaderWrapper>
     );
   }

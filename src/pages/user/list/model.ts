@@ -49,8 +49,9 @@ export interface ModelType {
   };
   reducers: {
     save: Reducer<IUserStateType>;
-    //add: Reducer<IUserStateType>;
+    addUser: Reducer<IUserStateType>;
     updateUser: Reducer<IUserStateType>;
+    removeUser: Reducer<IUserStateType>;
   };
 }
 
@@ -76,18 +77,22 @@ const Model: ModelType = {
     },
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addUser, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      if (response && response.status === 'ok') {
+        yield put({
+          type: 'addUser',
+          payload: response.data,
+        });
+      }
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeUser, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+      if (response && response.status === 'ok') {
+        yield put({
+          type: 'removeUser',
+          payload: payload.id,
+        });
+      }
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
@@ -121,6 +126,25 @@ const Model: ModelType = {
               return item;
             }
           }),
+          pagination: state!.data.pagination,
+        },
+      };
+    },
+    addUser(state, action) {
+      state!.data.list.push(<IUser>action.payload);
+      return {
+        ...state,
+        data: {
+          list: state!.data.list,
+          pagination: state!.data.pagination,
+        },
+      };
+    },
+    removeUser(state, action) {
+      return {
+        ...state,
+        data: {
+          list: state!.data.list.filter(user => user.id !== action.payload),
           pagination: state!.data.pagination,
         },
       };
